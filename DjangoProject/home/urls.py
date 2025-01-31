@@ -1,7 +1,9 @@
-from django.urls import path, include
+from django.urls import path
 from .views import home, about
 
+app_name = 'home'  # This enables namespacing in templates
+
 urlpatterns = [
-    path('', home, name='home'),
-    path('about', about, name='about'),
+    path('', home, name='index'),  # Now you can use {% url 'home:index' %}
+    path('about/', about, name='about'),  # Now you can use {% url 'home:about' %}
 ]
