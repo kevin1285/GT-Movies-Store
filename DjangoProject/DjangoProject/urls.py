@@ -23,5 +23,5 @@ from django.urls import path, include  # Import include
 
 urlpatterns = [
     path('admin/', admin.site.urls),  # Default Django admin site
-    path('', include('moviesStore.urls')),  # Include the URLs from the TestFile app
+    path('', include('home.urls')),  # Include the URLs from the TestFile app
 ]
