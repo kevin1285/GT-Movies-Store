@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+TIMB_API_KEY = os.getenv("TIMB_API_KEY","714ae4d54c00f8fe64ac39345b325eb3")
 # Application definition
 
 INSTALLED_APPS = [
