@@ -25,4 +25,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),  # Default Django admin site
     path('', include('home.urls')),  # Include the URLs from the TestFile app
     path('movies/', include('movies.urls')),
+    path('accounts/', include('moviesStore.urls')),  # Include the URLs from the TestFile app
 ]
