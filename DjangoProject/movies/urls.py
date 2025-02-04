@@ -8,6 +8,6 @@ urlpatterns = [
     path('', views.index, name='movies.index'),
     #path('', home, name='home'),
     path('login/', views.login_view, name='login'),
-    path('logout/', logout_view, name='logout'),
-    path('signup/', signup_view, name='signup'),
+    path('logout/', views.logout_view, name='logout'),
+    path('signup/', views.signup_view, name='signup'),
 ]
