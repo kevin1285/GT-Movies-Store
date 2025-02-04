@@ -32,6 +32,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+TIMB_API_KEY = os.getenv("TIMB_API_KEY","714ae4d54c00f8fe64ac39345b325eb3")
 
 # Application definition
 
