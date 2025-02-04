@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 
 
 def home(request):
-    return render(request, 'moviesStore/home.html')
+    return render(request, 'home/home.html')#change redirect
 
 
 def login_view(request):
