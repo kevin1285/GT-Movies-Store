@@ -78,6 +78,6 @@ def signup_view(request):
 
         user = User.objects.create_user(username=username, password=password1)
         login(request, user)  # Automatically log in after signing up
-        return redirect('movies:home')  # Redirect to home page
+        return redirect('home:movie_list')  # Redirect to home page
 
     return render(request, 'movies/signup.html')
