@@ -15,5 +15,8 @@ def about(request):
 
 def movie_list(request):
     movies = get_popular_movies()
+    query=request.GET.get('q', '')
+    filtered_movies = [movie for movie in movies if query.lower() in movie['title'].lower()]
     print(movies)
-    return render(request,"home/movie_list.html",{"movies":movies})
+    return render(request,"home/movie_list.html",{"movies":filtered_movies})
+

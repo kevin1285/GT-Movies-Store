@@ -39,6 +39,7 @@ def home(request):
     return render(request, 'home/home.html')#change redirect
 
 
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
