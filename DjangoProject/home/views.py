@@ -17,3 +17,4 @@ def movie_list(request):
     movies = get_popular_movies()
     print(movies)
     return render(request,"home/movie_list.html",{"movies":movies})
+

@@ -39,6 +39,7 @@ def home(request):
     return render(request, 'home/home.html')#change redirect
 
 
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -46,7 +47,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home:movie_list')  # Redirect after successful login
+            return redirect('home:home')  # Redirect after successful login
         else:
             messages.error(request, "Invalid username or password")
 
