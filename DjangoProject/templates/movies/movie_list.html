@@ -1,46 +1,47 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
+<div class="container text-center p-3">
+  <h1 class="mt-4">Welcome to Our Movie Store!</h1>
 
-<div class="p-3">
-  <div class="container">
-    <div class="row mt-3">
-      <div class="col mx-auto text-center mb-3">
-        <h1>Welcome to our movie store</h1>
-      
-          <div class="d-flex flex-column align-items-center">
-              <h2>Search for Movies</h2>
-              <input type="text" id="search-input" placeholder="Search by title..." class="form-control w-50 me-2" onkeyup="filterMovies()">
-          </div>
+  <!-- Search Bar -->
+  <div class="d-flex justify-content-center mt-5">
+    <input type="text"
+           id="search-input"
+           placeholder="Search by title..."
+           class="form-control"
+           style="width: 45%" onkeyup="filterMovies()"
+    >
+  </div>
 
-        <div class="movie-list mt-4">
-          {% for movie in movies %}
-            <div class="movie-item mb-4">
-              <h2 class="movie-title">{{ movie.title }}</h2>
-              <p class="movie-overview w-50 mx-auto">{{ movie.overview }}</p>
-              <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}">
+  <!-- Movie List -->
+  <div class="row mt-5">
+    {% for movie in movies %}
+      <div class="col-12 col-sm-6 col-md-4 mb-5 px-4 movie-item">
+        <div class="card h-100 shadow-lg">
+          <a href="{% url 'movies:movie' movie.id %}" class="text-decoration-none text-dark">
+            <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"
+                 class="card-img-top" alt="{{ movie.title }}" style="max-height: 400px">
+            <div class="card-body text-center">
+              <h5 class="card-title">{{ movie.title }}</h5>
             </div>
-          {% endfor %}
+          </a>
         </div>
       </div>
-    </div>
+    {% endfor %}
   </div>
 </div>
-    
+
+
 <script>
   function filterMovies() {
     let input = document.getElementById("search-input").value.toLowerCase();
     let movies = document.querySelectorAll(".movie-item");
-    
+
     movies.forEach(movie => {
-      let title = movie.querySelector(".movie-title").textContent.toLowerCase();
-      if (title.includes(input)) {
-        movie.style.display = "block";
-      } else {
-        movie.style.display = "none";
-      }
+      let title = movie.querySelector(".card-title").textContent.toLowerCase();
+      movie.style.display = title.includes(input) ? "block" : "none";
     });
   }
 </script>
-{% endblock content %}    
+{% endblock content %}
