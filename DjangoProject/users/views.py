@@ -1,10 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
-from django.core.checks import messages
-
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.contrib.auth import login
 from django.contrib import messages
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
 
 
 def login_view(request):
@@ -23,7 +20,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('movies:login')  # Redirect to login page after logout
+    return redirect('users:login')  # Redirect to login page after logout
 
 
 def signup_view(request):
