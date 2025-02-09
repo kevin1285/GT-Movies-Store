@@ -30,11 +30,13 @@ def movie(request, movie_id):
         review.user = request.user
         review.save()
         return redirect('movies:movie', movie_id=movie_id) #reload page to show new review
+    star_range = range(1,11)
     return render(request, 'movies/movie.html', {
         'movie':movie,
         'reviews':reviews,
         'form':form,
         'average_rating':average_rating,
+        'star_range':star_range,
     })
 
 

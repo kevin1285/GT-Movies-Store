@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
   <div class="row">
     <div class="col-md-6">
       <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="img-fluid">
@@ -36,24 +36,99 @@
         <h3 class="mt-4">Write a Review</h3>
         <form method="post">
           {% csrf_token %}
-          {{ form.as_p }}
+
+          <div class="mb-3">
+            <div id="star-rating">
+              {% for i in star_range %}
+                <span class="star" data-value="{{ i }}">&#9733;</span>
+              {% endfor %}
+            </div>
+            {{ form.rating }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.text }}
+          </div>
+
           <button type="submit" class="btn btn-primary mt-2">Submit Review</button>
         </form>
       {% else %}
         <p><a href="{% url 'users:login' %}">Log in</a> to write a review.</p>
       {% endif %}
-
     </div>
   </div>
 </div>
 
 <style>
   .review-container {
-    word-wrap: break-word; /* Break long words */
-    overflow-wrap: break-word; /* Ensure words wrap properly */
-    max-width: 100%; /* Prevent stretching beyond container */
-    white-space: normal; /* Ensures text wraps instead of overflowing */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  #star-rating {
+    font-size: 2rem;
+    cursor: pointer;
+    display: flex;
+    gap: 5px;
+  }
+
+  .star {
+    color: #ccc;
+    transition: color 0.2s;
+  }
+
+  .star.selected {
+    color: gold;
+  }
+
+  .star.hovered {
+    color: gold;
   }
 </style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const stars = document.querySelectorAll("#star-rating .star");
+    const ratingInput = document.getElementById("id_rating");
+    let selectedRating = 0; // Store the selected rating
+
+    stars.forEach(star => {
+      star.addEventListener("mouseover", function() {
+        resetStars();
+        this.classList.add("hovered");
+        let prev = this.previousElementSibling;
+        while (prev) {
+          prev.classList.add("hovered");
+          prev = prev.previousElementSibling;
+        }
+      });
+
+      star.addEventListener("mouseleave", function() {
+        resetStars();
+        applySelectedRating(); // Reapply selected rating after hover
+      });
+
+      star.addEventListener("click", function() {
+       selectedRating = parseInt(this.getAttribute("data-value")); // Store selected rating
+        ratingInput.value = selectedRating;
+        applySelectedRating();
+      });
+    });
+
+    function resetStars() {
+      stars.forEach(s => s.classList.remove("hovered", "selected"));
+    }
+
+    function applySelectedRating() {
+      stars.forEach(s => {
+        if (s.getAttribute("data-value") <= selectedRating) {
+          s.classList.add("selected");
+        }
+      });
+    }
+  });
+</script>
 
 {% endblock content %}
