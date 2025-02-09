@@ -22,10 +22,11 @@
 
       <h3 class="mt-4">User Reviews</h3>
       {% for review in reviews %}
-        <div class="border rounded p-3 mb-3">
-          <p><strong>{{ review.user.username }}</strong> ({{ review.created_at|date:"M d, Y" }})</p>
-          <p>{{ review.text }}</p>
+        <div class="border rounded p-3 mb-3 review-container">
+          <p><strong>{{ review.user.username }}</strong></p>
+          <p>{{ review.created_at|date:"M d, Y" }}</p>
           <p>⭐ {{ review.rating }}/10</p>
+          <p>{{ review.text }}</p>
         </div>
       {% empty %}
         <p>No reviews yet. Be the first to review this movie!</p>
@@ -45,4 +46,14 @@
     </div>
   </div>
 </div>
+
+<style>
+  .review-container {
+    word-wrap: break-word; /* Break long words */
+    overflow-wrap: break-word; /* Ensure words wrap properly */
+    max-width: 100%; /* Prevent stretching beyond container */
+    white-space: normal; /* Ensures text wraps instead of overflowing */
+  }
+</style>
+
 {% endblock content %}
