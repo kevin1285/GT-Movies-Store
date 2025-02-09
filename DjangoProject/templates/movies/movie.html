@@ -18,26 +18,31 @@
       </p>
 
       <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
+      <p><strong>Genres:</strong> {{ movie_genres|join:", " }}</p>
       <p>{{ movie.overview }}</p>
 
-      <h3 class="mt-4">User Reviews</h3>
-      {% for review in reviews %}
-        <div class="border rounded p-3 mb-3 review-container">
-          <p><strong>{{ review.user.username }}</strong></p>
-          <p>{{ review.created_at|date:"M d, Y" }}</p>
-          <p>⭐ {{ review.rating }}/10</p>
-          <p>{{ review.text }}</p>
+      <h5 class="mt-4 mb-2">Reviews</h5>
+        {% for review in reviews %}
+        <div class="border rounded p-2 mb-2 review-container">
+            <div class="d-flex justify-content-between align-items-center">
+              <strong class="username">{{ review.user.username }}</strong>
+              <small class="text-muted">{{ review.created_at|date:"M d, Y" }}</small>
+            </div>
+            <div class="rating">
+              ⭐ {{review.rating}}/10
+            </div>
+            <p class="review-text mt-1">{{ review.text }}</p>
         </div>
       {% empty %}
         <p>No reviews yet. Be the first to review this movie!</p>
       {% endfor %}
 
       {% if user.is_authenticated %}
-        <h3 class="mt-4">Write a Review</h3>
-        <form method="post">
+        <h6 class="mt-4">Write a Review</h6>
+        <form method="post" class="review-form">
           {% csrf_token %}
 
-          <div class="mb-3">
+          <div class="mt-0 mb-1">
             <div id="star-rating">
               {% for i in star_range %}
                 <span class="star" data-value="{{ i }}">&#9733;</span>
@@ -46,11 +51,11 @@
             {{ form.rating }}
           </div>
 
-          <div class="mb-3">
+          <div class="mb-1 r-4">
             {{ form.text }}
           </div>
 
-          <button type="submit" class="btn btn-primary mt-2">Submit Review</button>
+          <button type="submit" class="btn btn-primary mt-2">Submit</button>
         </form>
       {% else %}
         <p><a href="{% url 'users:login' %}">Log in</a> to write a review.</p>
@@ -65,13 +70,25 @@
     overflow-wrap: break-word;
     max-width: 100%;
     white-space: normal;
+    padding-left: 12px !important;
+  }
+
+  .rating {
+      margin-left: -3px;
+  }
+
+  .review-form {
+      background: #f8f9fa;
+      padding: 8px;
+      border-radius: 8px;
   }
 
   #star-rating {
-    font-size: 2rem;
+    margin-top: -10px;
+    font-size: 1.7rem;
     cursor: pointer;
     display: flex;
-    gap: 5px;
+    gap: 3px;
   }
 
   .star {
