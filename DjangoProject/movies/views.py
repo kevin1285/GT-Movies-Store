@@ -1,5 +1,5 @@
 from django.db.models import Avg
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from movies.api_utils import get_popular_movies, get_movie
 from .models import Review
 from .forms import ReviewForm
@@ -45,5 +45,11 @@ def movie(request, movie_id):
         'movie_genres': movie_genres,
         'star_range':star_range,
     })
+
+def delete_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    if request.user == review.user:
+        review.delete()
+    return redirect('movies:movie', movie_id=review.movie_id)
 
 
