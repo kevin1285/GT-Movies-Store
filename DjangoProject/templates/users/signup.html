@@ -69,11 +69,11 @@
                         <label class="form-label">Confirm Password:</label>
                         <input type="password" name="password2" class="form-control" required>
                         {% if form.password2.errors %}
-                            <div class="text-danger">
-                                {% for error in form.password2.errors %}
-                                    <p>{{ error }}</p>
-                                {% endfor %}
-                            </div>
+                            {% for error in form.password2.errors %}
+                                {% if error == "Passwords do not match." %}
+                                    <div class="text-danger"><p>{{ error }}</p></div>
+                                {% endif %}
+                            {% endfor %}
                         {% endif %}
                     </div>
 
