@@ -26,7 +26,18 @@
           <div class="navbar-nav ms-auto navbar-ml">
               <a class="nav-link" href="{% url 'movies:movie_list' %}">Movies</a>
               <a class="nav-link" href="{% url 'home:about' %}">About</a>
-              <a class="nav-link" href="{% url 'users:login' %}">Account</a><! Fix -->
+              {% if user.is_authenticated %}
+                  <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      {{ user.username }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                      <li><a class="dropdown-item" href="{% url 'users:logout' %}">Logout</a></li>
+                    </ul>
+                  </div>
+                {% else %}
+                  <a class="nav-link" href="{% url 'users:login' %}">Sign In</a>
+                {% endif %}
           </div>
         </div>
       </div>
