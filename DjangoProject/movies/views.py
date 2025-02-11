@@ -45,10 +45,22 @@ def submit_review(request, movie_id):
     review.save()
     return redirect('movies:movie', movie_id=movie_id)
 
+def edit_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    if request.user != review.user:
+        return redirect('movies:movie', movie_id=review.movie_id)
+
+    form = ReviewForm(request.POST, instance=review)
+    if form.is_valid():
+        form.save()
+    return redirect('movies:movie', movie_id=review.movie_id)
+
+
 def delete_review(request, review_id):
     review = get_object_or_404(Review, id=review_id)
     if request.user == review.user:
         review.delete()
     return redirect('movies:movie', movie_id=review.movie_id)
+
 
 
