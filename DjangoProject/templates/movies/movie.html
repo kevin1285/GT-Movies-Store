@@ -32,6 +32,14 @@
               ⭐ {{review.rating}}/10
             </div>
             <p class="review-text mt-1">{{ review.text }}</p>
+
+            <!-- Delete Button -->
+            {% if user == review.user %}
+            <form method="post" action="{% url 'movies:delete_review' review.id %}" class="delete-form">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+            {% endif %}
         </div>
       {% empty %}
         <p>No reviews yet. Be the first to review this movie!</p>
@@ -39,7 +47,7 @@
 
       {% if user.is_authenticated %}
         <h6 class="mt-4">Write a Review</h6>
-        <form method="post" class="review-form">
+        <form method="post" action="{% url 'movies:submit_review' movie.id %}" class="review-form">
           {% csrf_token %}
 
           <div class="mt-0 mb-1">
