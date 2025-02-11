@@ -33,13 +33,36 @@
             </div>
             <p class="review-text mt-1">{{ review.text }}</p>
 
-            <!-- Delete Button -->
+            <!-- Edit and delete -->
             {% if user == review.user %}
-            <form method="post" action="{% url 'movies:delete_review' review.id %}" class="delete-form">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-            </form>
-            {% endif %}
+            <div class="edit-delete-button-container">
+              <!-- Edit button-->
+              <button class="btn btn-primary btn-sm edit-btn">Edit</button>
+
+              <!-- Delete button-->
+              <form method="post" action="{% url 'movies:delete_review' review.id %}" class="delete-form d-inline">
+                {% csrf_token %}
+                <button type="submit" class="border-0 bg-transparent text-secondary">
+                    <i class="fas fa-trash"></i>
+                </button>
+              </form>
+            </div>
+
+            <!-- Hidden Edit Form -->
+            <form method="post" action="{% url 'movies:edit_review' review.id %}" class="edit-form mt-2" style="display: none;">
+            {% csrf_token %}
+            <div class="mb-1">
+              <label><strong>Rating:</strong></label>
+              <input type="number" name="rating" value="{{ review.rating }}" min="1" max="10" class="form-control form-control-sm">
+            </div>
+            <div class="mb-1">
+              <label><strong>Review:</strong></label>
+              <textarea name="text" class="form-control form-control-sm">{{ review.text }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-success btn-sm">Save</button>
+            <button type="button" class="btn btn-secondary btn-sm cancel-edit">Cancel</button>
+          </form>
+          {% endif %}
         </div>
       {% empty %}
         <p>No reviews yet. Be the first to review this movie!</p>
@@ -111,9 +134,57 @@
   .star.hovered {
     color: gold;
   }
+  
+
+  .edit-delete-button-container {
+      display: flex;
+      justify-content: space-between;
+  }
 </style>
 
 <script>
+  //edit
+  document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".edit-btn").forEach(button => {
+      button.addEventListener("click", function() {
+        const reviewContainer = this.closest(".review-container");
+        const editForm = reviewContainer.querySelector(".edit-form");
+        const reviewText = reviewContainer.querySelector(".review-text");
+        const ratingDisplay = reviewContainer.querySelector(".rating");
+        const editDeleteButtonContainer = reviewContainer.querySelector(".edit-delete-button-container");
+
+        // Show form and hide text
+        editForm.style.display = "block";
+        reviewText.style.display = "none";
+        ratingDisplay.style.display = "none";
+
+        //hide edit and delete buttons
+        editDeleteButtonContainer.style.display = "none";
+
+      });
+    });
+
+    document.querySelectorAll(".cancel-edit").forEach(button => {
+      button.addEventListener("click", function() {
+        const reviewContainer = this.closest(".review-container");
+        const editForm = reviewContainer.querySelector(".edit-form");
+        const reviewText = reviewContainer.querySelector(".review-text");
+        const ratingDisplay = reviewContainer.querySelector(".rating");
+        const editDeleteButtonContainer = reviewContainer.querySelector(".edit-delete-button-container");
+
+        // Hide form and show original text
+        editForm.style.display = "none";
+        reviewText.style.display = "block";
+        ratingDisplay.style.display = "inline";
+
+        //show edit and delete buttons
+        editDeleteButtonContainer.style.display = "flex";
+
+      });
+    });
+  });
+
+  //delete
   document.addEventListener("DOMContentLoaded", function() {
     const stars = document.querySelectorAll("#star-rating .star");
     const ratingInput = document.getElementById("id_rating");
