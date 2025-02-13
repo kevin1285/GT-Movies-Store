@@ -40,3 +40,14 @@ class Review(models.Model):
         return f"{self.rating}-star review by {self.user.username} for movie {self.movie_id}: {self.text}"
 
 
+class Cart(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    movies = models.ManyToManyField(Movie)
+
+    def total_price(self):
+        return sum(movie.price for movie in self.movies.all())
+
+    def __str__(self):
+        return f"Cart {self.id} - User: {self.user.username if self.user else 'Guest'}"
+
+
