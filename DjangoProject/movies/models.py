@@ -13,6 +13,16 @@ class Movie(models.Model):
     def __str__(self):
         return self.title
 
+    def formatted_runtime(self):
+        #Formats runtime as H:MM
+        hours = self.runtime // 60
+        minutes = self.runtime % 60
+        if hours > 0 and minutes > 0:
+            return f"{hours}h {minutes}m"
+        elif hours > 0:
+            return f"{hours}h"
+        return f"{minutes}m"
+
 class Review(models.Model):
     movie_id = models.IntegerField()
     user = models.ForeignKey(User, on_delete=models.CASCADE) # if user is deleted, so are its reviews
