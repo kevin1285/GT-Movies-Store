@@ -33,6 +33,10 @@
                     Don't have an account? <a href="{% url 'users:signup' %}">Sign Up here</a>
                 </p>
 
+                <p>
+                    <a href="{% url 'password_reset' %}" class="forgot-password">Forgot Password?</a>
+                </p>
+
                 <div class="text-center mt-3">
                     <a href="{% url 'home:index' %}" class="btn btn-outline-secondary w-100">Continue as Guest</a>
                 </div>
