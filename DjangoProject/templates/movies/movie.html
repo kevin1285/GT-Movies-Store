@@ -8,8 +8,8 @@
     </div>
     <div class="col-md-6">
       <h1>{{ movie.title }}</h1>
-      <p><strong>
-          {{ movie.formatted_release_date }} • {{ movie.formatted_runtime }} • {{ movie.genres|join:", "}}
+      <p class="details-list"><strong>
+          {{ movie.formatted_release_date }} • {{ movie.formatted_runtime }} • {{ movie.genres|join:"/"}}
       </strong></p>
         <!-- Average Rating -->
       <p>
@@ -19,7 +19,7 @@
           <span class="text-muted">No ratings yet</span>
         {% endif %}
       </p>
-    
+
       <p><strong>Overview</strong><br>{{ movie.overview }}</p>
 
       <p><strong>Price:</strong> {{ movie.price }}</p>
@@ -104,6 +104,10 @@
     max-width: 100%;
     white-space: normal;
     padding-left: 12px !important;
+  }
+
+  .details-list {
+      font-size: 14px;
   }
 
   .rating {
