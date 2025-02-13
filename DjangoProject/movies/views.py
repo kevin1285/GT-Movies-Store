@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Movie, Review
 from .forms import ReviewForm
 
+# MOVIES
 def movie_list(request):
     movies = Movie.objects.all()
     #print(movies)
@@ -29,6 +30,7 @@ def movie(request, movie_id):
         'star_range':range(1,11),
     })
 
+# REVIEWS
 def submit_review(request, movie_id):
     form = ReviewForm(request.POST)
     if not request.user.is_authenticated:
@@ -53,12 +55,16 @@ def edit_review(request, review_id):
         form.save()
     return redirect('movies:movie', movie_id=review.movie_id)
 
-
 def delete_review(request, review_id):
     review = get_object_or_404(Review, id=review_id)
     if request.user == review.user:
         review.delete()
     return redirect('movies:movie', movie_id=review.movie_id)
+
+# SHOPPING CART
+def cart(request):
+    return render(request, 'movies/cart.html')
+
 
 
 
