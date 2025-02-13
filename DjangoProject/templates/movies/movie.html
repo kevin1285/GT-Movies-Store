@@ -8,23 +8,21 @@
     </div>
     <div class="col-md-6">
       <h1>{{ movie.title }}</h1>
-      <p>⭐ ${{ movie.price }} | {{ movie.formatted_runtime }} | {{ movie.genres|join:", "}}</p>
+      <p><strong>
+          {{ movie.formatted_release_date }} • {{ movie.formatted_runtime }} • {{ movie.genres|join:", "}}
+      </strong></p>
         <!-- Average Rating -->
-      <p class="fs-5">
+      <p>
         {% if average_rating %}
           <span>⭐ {{ average_rating|floatformat:1 }}/10</span>
         {% else %}
           <span class="text-muted">No ratings yet</span>
         {% endif %}
       </p>
-
-      <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
-      <p><strong>Genres:</strong> {${{ movie.price }}{ movie.genres|join:", " }}</p>
-      <p><strong>Runtime:</strong> {{ movie.formatted_runtime }}</p>
-      <p><strong>Price:</strong> </p>
-
+    
       <p><strong>Overview</strong><br>{{ movie.overview }}</p>
 
+      <p><strong>Price:</strong> {{ movie.price }}</p>
       <h5 class="mt-4 mb-2">Reviews</h5>
         {% for review in reviews %}
         <div class="border rounded p-2 mb-2 review-container">
