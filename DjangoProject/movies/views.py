@@ -1,25 +1,24 @@
 from django.db.models import Avg
 from django.shortcuts import render, redirect, get_object_or_404
-from movies.api_utils import get_popular_movies, get_movie
-from .models import Review
+from .models import Movie, Review
 from .forms import ReviewForm
 
 def movie_list(request):
-    movies = get_popular_movies()
+    movies = Movie.objects.all()
     #print(movies)
     return render(request, "movies/movie_list.html", {"movies":movies})
 
 def movie(request, movie_id):
-    movie = get_movie(movie_id)
+    movie = Movie.objects.filter(id=movie_id).first()
     if not movie:
         print('movie does not exist') #404 page later?
 
     reviews = Review.objects.filter(movie_id=movie_id)
     average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
 
-    movie_genres = []
+    """movie_genres = []
     for genre in movie['genres']:
-        movie_genres.append(genre['name'])
+        movie_genres.append(genre['name'])"""
 
 
     return render(request, 'movies/movie.html', {
@@ -27,7 +26,6 @@ def movie(request, movie_id):
         'reviews':reviews,
         'form':ReviewForm(),
         'average_rating':average_rating,
-        'movie_genres': movie_genres,
         'star_range':range(1,11),
     })
 
