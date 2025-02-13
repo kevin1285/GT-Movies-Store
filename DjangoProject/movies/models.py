@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import datetime
 
 class Movie(models.Model):
     title = models.CharField(max_length=255)
@@ -12,6 +13,21 @@ class Movie(models.Model):
 
     def __str__(self):
         return self.title
+
+    def formatted_runtime(self):
+        #Formats runtime as H:MM
+        hours = self.runtime // 60
+        minutes = self.runtime % 60
+        if hours > 0 and minutes > 0:
+            return f"{hours}h {minutes}m"
+        elif hours > 0:
+            return f"{hours}h"
+        return f"{minutes}m"
+
+    def formatted_release_date(self):
+        # converts from YYYY-MM-DD to MM-DD-YYYY
+        return datetime.strptime(self.release_date, "%Y-%m-%d").strftime("%m-%d-%Y")
+
 
 class Review(models.Model):
     movie_id = models.IntegerField()
