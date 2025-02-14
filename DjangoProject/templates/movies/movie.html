@@ -28,7 +28,7 @@
         {% csrf_token %}
         <button type="submit" class="btn btn-success">Add to Cart</button>
       </form>
-    
+
       <h5 class="mt-4 mb-2">Reviews</h5>
         {% for review in reviews %}
         <div class="border rounded p-2 mb-2 review-container">
@@ -97,7 +97,7 @@
           <button type="submit" class="btn btn-primary mt-2">Submit</button>
         </form>
       {% else %}
-        <p><a href="{% url 'users:login' %}">Log in</a> to write a review.</p>
+        <p><a href="{% url 'users:login' %}?next={% url 'movies:movie' movie.id %}">Login</a> to write a review.</p>
       {% endif %}
     </div>
   </div>

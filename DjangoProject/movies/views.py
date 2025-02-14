@@ -1,5 +1,9 @@
+from django.contrib.auth import user_logged_in
 from django.db.models import Avg
+from django.dispatch import receiver
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+
 from .models import Movie, Review, Cart
 from .forms import ReviewForm
 
@@ -63,7 +67,7 @@ def delete_review(request, review_id):
 
 # SHOPPING CART
 def get_or_create_cart(request):
-    """Retrieve the user's cart or create one if it doesn't exist."""
+    #Retrieve the user's cart or create one if it doesn't exist.
     if request.user.is_authenticated:
         cart, _ = Cart.objects.get_or_create(user=request.user)
     else:
@@ -94,3 +98,38 @@ def remove_from_cart(request, movie_id):
         cart.movies.remove(movie_id)
     return redirect('movies:cart')
 
+@receiver(user_logged_in)
+def merge_guest_cart(sender, request, user, **kwargs):
+    session_cart_id = request.session.get("cart_id")
+    if session_cart_id:
+        try:
+            guest_cart = Cart.objects.get(id=session_cart_id)
+            user_cart, _ = Cart.objects.get_or_create(user=user)
+
+            # Merge guest cart into user cart
+            for movie in guest_cart.movies.all():
+                user_cart.movies.add(movie)
+
+            # Delete guest cart and remove session key
+            guest_cart.delete()
+            del request.session["cart_id"]
+
+        except Cart.DoesNotExist:
+            print("CART DOES NOT EXIST")
+
+# CHECKOUT:
+def checkout(request):
+    if not request.user.is_authenticated:
+        return redirect(f"{reverse('users:login')}?next={reverse('movies:checkout')}")
+    cart = Cart.objects.get(user=request.user)
+    return render(request, "movies/checkout.html", {"cart": cart})
+
+def place_order(request):
+    if not request.user.is_authenticated:
+        return redirect("users:login")
+    cart = Cart.objects.get(user=request.user)
+    cart.movies.clear()
+    return redirect("movies:order_confirmation")
+
+def order_confirmation(request):
+    return render(request, "movies/order_confirmation.html")
