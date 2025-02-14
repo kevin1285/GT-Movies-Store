@@ -23,6 +23,12 @@
       <p><strong>Overview</strong><br>{{ movie.overview }}</p>
 
       <p><strong>Price:</strong> {{ movie.price }}</p>
+      <!-- Add to Cart Button -->
+      <form method="post" action="{% url 'movies:add_to_cart' movie.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Add to Cart</button>
+      </form>
+    
       <h5 class="mt-4 mb-2">Reviews</h5>
         {% for review in reviews %}
         <div class="border rounded p-2 mb-2 review-container">

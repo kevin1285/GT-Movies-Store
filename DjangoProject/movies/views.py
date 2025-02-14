@@ -1,6 +1,6 @@
 from django.db.models import Avg
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Movie, Review
+from .models import Movie, Review, Cart
 from .forms import ReviewForm
 
 # MOVIES
@@ -62,9 +62,35 @@ def delete_review(request, review_id):
     return redirect('movies:movie', movie_id=review.movie_id)
 
 # SHOPPING CART
+def get_or_create_cart(request):
+    """Retrieve the user's cart or create one if it doesn't exist."""
+    if request.user.is_authenticated:
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+    else:
+        cart_id = request.session.get("cart_id")
+        if cart_id:
+            cart = Cart.objects.filter(id=cart_id).first()
+        else:
+            cart = Cart.objects.create()
+            request.session["cart_id"] = cart.id  # Save guest cart ID
+    return cart
+
 def cart(request):
-    return render(request, 'movies/cart.html')
+    """Display the shopping cart."""
+    cart = get_or_create_cart(request)
+    return render(request, "movies/cart.html", {"cart": cart, "movies": cart.movies.all()})
 
+def add_to_cart(request, movie_id):
+    """Add a movie to the cart."""
+    cart = get_or_create_cart(request)
+    movie = get_object_or_404(Movie, id=movie_id)
+    cart.movies.add(movie)
+    return redirect('movies:cart')
 
-
+def remove_from_cart(request, movie_id):
+    """Remove a movie from the cart."""
+    cart = get_or_create_cart(request)
+    if cart:
+        cart.movies.remove(movie_id)
+    return redirect('movies:cart')
 
