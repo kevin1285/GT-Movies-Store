@@ -96,10 +96,14 @@ def remove_from_cart(request, movie_id):
 
 # CHECKOUT:
 def checkout(request):
+    if not request.user.is_authenticated:
+        return redirect("users:login")
     cart = Cart.objects.get(user=request.user)
     return render(request, "movies/checkout.html", {"cart": cart})
 
 def place_order(request):
+    if not request.user.is_authenticated:
+        return redirect("users:login")
     cart = Cart.objects.get(user=request.user)
     cart.movies.clear()
     return redirect("movies:order_confirmation")
