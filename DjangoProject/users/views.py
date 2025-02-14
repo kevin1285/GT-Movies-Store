@@ -5,6 +5,15 @@ from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from django.shortcuts import render, redirect
 from django import forms
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import SetPasswordForm
+from django.contrib.auth.forms import PasswordResetForm
+
+SECURITY_QUESTIONS = {
+    "q1": "What is your favorite color?",
+    "q2": "What is your first pet’s name?",
+    "q3": "What is your mother's maiden name?"
+}
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True, help_text="Required. Enter a valid email address.")
@@ -69,3 +78,56 @@ def signup_view(request):
         form = CustomUserCreationForm()
 
     return render(request, "users/signup.html", {"form": form})
+
+
+class SecurityQuestionForm(forms.Form):
+    username = forms.CharField(label="Username", max_length=150)
+    question = forms.ChoiceField(label="Select Security Question", choices=[(k, v) for k, v in SECURITY_QUESTIONS.items()])
+    answer = forms.CharField(label="Answer", max_length=150)
+
+def forgot_password_view(request):
+    if request.method == "POST":
+        form = SecurityQuestionForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            selected_question = form.cleaned_data["question"]
+            answer = form.cleaned_data["answer"]
+
+            try:
+                user = User.objects.get(username=username)
+                user_profile = user.profile  # Assuming security questions are stored in a related profile model
+
+                # Check if answer matches (case insensitive)
+                if user_profile.security_answers.get(selected_question, "").lower() == answer.lower():
+                    request.session["reset_user"] = user.username  # Store username in session
+                    return redirect("users:password_reset_confirm")  # Redirect to password reset form
+                else:
+                    messages.error(request, "Incorrect answer. Please try again.")
+
+            except User.DoesNotExist:
+                messages.error(request, "User not found.")
+
+    else:
+        form = SecurityQuestionForm()
+
+    return render(request, "users/password_reset.html", {"form": form})
+
+def password_reset_confirm_view(request):
+    username = request.session.get("reset_user")  # Get stored username
+    if not username:
+        return redirect("users:forgot_password")  # If session expires, restart process
+
+    user = get_user_model().objects.get(username=username)
+
+    if request.method == "POST":
+        form = SetPasswordForm(user, request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your password has been successfully reset.")
+            del request.session["reset_user"]  # Remove user session
+            return redirect("users:login")  # Redirect to login
+
+    else:
+        form = SetPasswordForm(user)
+
+    return render(request, "users/password_reset_confirm.html", {"form": form})
