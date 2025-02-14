@@ -1,3 +1,5 @@
+from decimal import Decimal, ROUND_HALF_UP
+
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
@@ -44,8 +46,12 @@ class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     movies = models.ManyToManyField(Movie)
 
-    def total_price(self):
+    def subtotal(self):
         return sum(movie.price for movie in self.movies.all())
+    def tax(self):
+        return (Decimal('0.04') * self.subtotal()).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+    def total(self):
+        return (self.subtotal() + self.tax()).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
 
     def __str__(self):
         return f"Cart {self.id} - User: {self.user.username if self.user else 'Guest'}"

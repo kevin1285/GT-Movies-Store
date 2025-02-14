@@ -63,7 +63,7 @@ def delete_review(request, review_id):
 
 # SHOPPING CART
 def get_or_create_cart(request):
-    """Retrieve the user's cart or create one if it doesn't exist."""
+    #Retrieve the user's cart or create one if it doesn't exist.
     if request.user.is_authenticated:
         cart, _ = Cart.objects.get_or_create(user=request.user)
     else:
@@ -94,3 +94,15 @@ def remove_from_cart(request, movie_id):
         cart.movies.remove(movie_id)
     return redirect('movies:cart')
 
+# CHECKOUT:
+def checkout(request):
+    cart = Cart.objects.get(user=request.user)
+    return render(request, "movies/checkout.html", {"cart": cart})
+
+def place_order(request):
+    cart = Cart.objects.get(user=request.user)
+    cart.movies.clear()
+    return redirect("movies:order_confirmation")
+
+def order_confirmation(request):
+    return render(request, "movies/order_confirmation.html")

@@ -34,8 +34,8 @@
 
         <!-- Cart Summary -->
         <div class="d-flex justify-content-between align-items-center mt-4 mb-5 p-4 bg-light rounded shadow-sm">
-            <h4 class="m-0">Cart Subtotal: <span class="text-primary">${{ cart.total_price }}</span></h4>
-            <button class="btn btn-warning btn-md fw-bold rounded-pill px-4 py-2 shadow-sm">Proceed to Checkout ({{ cart.movies.count }} movies)</button>
+            <h4 class="m-0">Cart Subtotal: <span class="text-primary">${{ cart.subtotal }}</span></h4>
+            <a href="{% url 'movies:checkout' %}" class="btn btn-warning btn-md fw-bold rounded-pill px-4 py-2 shadow-sm">Proceed to Checkout ({{ cart.movies.count }} movies)</a>
         </div>
     {% else %}
         <div class="d-flex justify-content-center">
