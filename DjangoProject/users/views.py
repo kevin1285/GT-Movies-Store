@@ -44,12 +44,13 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 def login_view(request):
+    next_url = request.GET.get("next", "movies:movie_list")
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect("movies:movie_list")
+            return redirect(next_url)
         else:
             messages.error(request, "Invalid username or password.")
 
@@ -61,16 +62,18 @@ def login_view(request):
 
 
 def logout_view(request):
+    next_url = request.GET.get("next", "users:login")
     logout(request)
-    return redirect('users:login')  # Redirect to login page after logout
+    return redirect(next_url)  # Redirect to login page after logout
 
 def signup_view(request):
+    next_url = request.GET.get("next", "movies:movie_list")
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect("movies:movie_list")
+            return redirect(next_url)
         else:
             messages.error(request, "Please correct the errors below.")
 
