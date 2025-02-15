@@ -23,6 +23,7 @@
       <p><strong>Overview</strong><br>{{ movie.overview }}</p>
 
       <p><strong>Price:</strong> {{ movie.price }}</p>
+    <a href="" class="buy-button"><strong>Add to Cart</strong></a>
       <h5 class="mt-4 mb-2">Reviews</h5>
         {% for review in reviews %}
         <div class="border rounded p-2 mb-2 review-container">
@@ -98,6 +99,17 @@
 </div>
 
 <style>
+a.buy-button {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #28a745; /* Green color */
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
   .review-container {
     word-wrap: break-word;
     overflow-wrap: break-word;
