@@ -1,5 +1,95 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Shopping Cart</h1>
+    <body>
+      <div class="shopping-cart">
+        <h1>Your Shopping Cart</h1>
+        <ul>
+          <li>
+            <span class="item-name">Item Name Placeholder</span>
+            <span class="item-price">$0.00</span>
+            <button class="remove-button">Remove</button>
+          </li>
+          <li>
+            <span class="item-name">Another Item Placeholder</span>
+            <span class="item-price">$0.00</span>
+            <button class="remove-button">Remove</button>
+          </li>
+          <!-- Add more list items as needed -->
+        </ul>
+        <div class="cart-summary">
+          <strong>Total: $0.00</strong>
+        </div>
+        <button class="buy-button">Buy</button>
+      </div>
+    </body>
+    <style>
+
+.shopping-cart {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+.shopping-cart h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.shopping-cart ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.shopping-cart li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.item-name {
+  flex: 2;
+}
+
+.item-price {
+  flex: 1;
+  text-align: right;
+}
+
+.remove-button {
+  background-color: #ff6b6b;
+  border: none;
+  color: #fff;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 3px;
+  font-size: 0.9em;
+  margin-left: 10px;
+}
+
+.cart-summary {
+  text-align: right;
+  font-size: 1.2em;
+  margin-top: 10px;
+}
+
+.buy-button {
+  background-color: #4CAF50;
+  border: none;
+  color: #fff;
+  padding: 12px;
+  cursor: pointer;
+  border-radius: 3px;
+  font-size: 1em;
+  width: 100%;
+  margin-top: 20px;
+}
+
+    </style>
 {% endblock %}

@@ -64,7 +64,7 @@ def delete_review(request, review_id):
 # SHOPPING CART
 def cart(request):
     return render(request, 'movies/cart.html')
-
+    
 
 
 
