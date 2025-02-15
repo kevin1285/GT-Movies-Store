@@ -150,3 +150,21 @@ def place_order(request):
 
 def order_confirmation(request):
     return render(request, "movies/order_confirmation.html")
+
+def orders(request):
+    if not request.user.is_authenticated:
+        return redirect("users:login")
+    user_orders = Order.objects.filter(user=request.user).order_by("-created_at")
+    return render(request, "movies/orders.html", {"orders": user_orders})
+
+def order_detail(request, order_id):
+    if not request.user.is_authenticated:
+        return redirect("users:login")
+
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    order_items = OrderItem.objects.filter(order=order)
+
+    return render(request, "movies/order_detail.html", {
+        "order": order,
+        "order_items": order_items,
+    })
