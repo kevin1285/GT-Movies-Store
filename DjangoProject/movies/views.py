@@ -4,7 +4,7 @@ from django.dispatch import receiver
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
-from .models import Movie, Review, Cart
+from .models import Movie, Review, Cart, Order, OrderItem
 from .forms import ReviewForm
 
 # MOVIES
@@ -121,13 +121,30 @@ def merge_guest_cart(sender, request, user, **kwargs):
 def checkout(request):
     if not request.user.is_authenticated:
         return redirect(f"{reverse('users:login')}?next={reverse('movies:checkout')}")
-    cart = Cart.objects.get(user=request.user)
-    return render(request, "movies/checkout.html", {"cart": cart})
+    cart = get_object_or_404(Cart, user=request.user)
+    if not cart.movies.exists():
+        return redirect('movies:cart')  # no checkout if empty cart
+
+    return render(request, "movies/checkout.html", {
+        "cart": cart,
+        "subtotal": cart.subtotal(),
+        "tax": cart.tax(),
+        "total": cart.total(),
+    })
+
 
 def place_order(request):
     if not request.user.is_authenticated:
         return redirect("users:login")
     cart = Cart.objects.get(user=request.user)
+    order = Order.objects.create(
+        user=request.user,
+        subtotal=cart.subtotal(),
+        tax=cart.tax(),
+        total=cart.total()
+    )
+    for movie in cart.movies.all():
+        OrderItem.objects.create(order=order, movie=movie, price=movie.price)
     cart.movies.clear()
     return redirect("movies:order_confirmation")
 

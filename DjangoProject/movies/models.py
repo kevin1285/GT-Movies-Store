@@ -56,4 +56,31 @@ class Cart(models.Model):
     def __str__(self):
         return f"Cart {self.id} - User: {self.user.username if self.user else 'Guest'}"
 
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    movies = models.ManyToManyField(Movie, through='OrderItem')
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
+    tax = models.DecimalField(max_digits=10, decimal_places=2)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ("Pending", "Pending"),
+            ("Completed", "Completed"),
+            ("Canceled", "Canceled"),
+        ],
+        default="Pending",
+    )
 
+    def __str__(self):
+        return f"Order {self.id} - User: {self.user.username if self.user else 'Guest'} - {self.status}"
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"Order {self.order.id} - {self.movie.title} - ${self.price}"
