@@ -1,6 +1,9 @@
+from urllib.parse import urlencode
+
 from django.contrib.auth import user_logged_in
 from django.db.models import Avg
 from django.dispatch import receiver
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
@@ -38,7 +41,8 @@ def movie(request, movie_id):
 def submit_review(request, movie_id):
     form = ReviewForm(request.POST)
     if not request.user.is_authenticated:
-        return redirect('users:login')
+        login_url = reverse("users:login")
+        return HttpResponseRedirect(f"{login_url}?{urlencode({'next': 'movies:movie/movie_id'})}")
     form = ReviewForm(request.POST)
     if not form.is_valid():  # validate input
         print('invalid form:', form.errors)
@@ -80,26 +84,23 @@ def get_or_create_cart(request):
     return cart
 
 def cart(request):
-    """Display the shopping cart."""
     cart = get_or_create_cart(request)
     return render(request, "movies/cart.html", {"cart": cart, "movies": cart.movies.all()})
 
 def add_to_cart(request, movie_id):
-    """Add a movie to the cart."""
     cart = get_or_create_cart(request)
     movie = get_object_or_404(Movie, id=movie_id)
     cart.movies.add(movie)
     return redirect('movies:cart')
 
 def remove_from_cart(request, movie_id):
-    """Remove a movie from the cart."""
     cart = get_or_create_cart(request)
     if cart:
         cart.movies.remove(movie_id)
     return redirect('movies:cart')
 
 @receiver(user_logged_in)
-def merge_guest_cart(sender, request, user, **kwargs):
+def merge_guest_cart(request, user, **kwargs):
     session_cart_id = request.session.get("cart_id")
     if session_cart_id:
         try:
@@ -120,7 +121,8 @@ def merge_guest_cart(sender, request, user, **kwargs):
 # CHECKOUT:
 def checkout(request):
     if not request.user.is_authenticated:
-        return redirect(f"{reverse('users:login')}?next={reverse('movies:checkout')}")
+        login_url = reverse("users:login")
+        return HttpResponseRedirect(f"{login_url}?{urlencode({'next': request.path})}")
     cart = get_object_or_404(Cart, user=request.user)
     if not cart.movies.exists():
         return redirect('movies:cart')  # no checkout if empty cart
@@ -135,7 +137,8 @@ def checkout(request):
 
 def place_order(request):
     if not request.user.is_authenticated:
-        return redirect("users:login")
+        login_url = reverse("users:login")
+        return HttpResponseRedirect(f"{login_url}?{urlencode({'next': request.path})}")
     cart = Cart.objects.get(user=request.user)
     order = Order.objects.create(
         user=request.user,
@@ -153,13 +156,15 @@ def order_confirmation(request):
 
 def orders(request):
     if not request.user.is_authenticated:
-        return redirect("users:login")
+        login_url = reverse("users:login")
+        return HttpResponseRedirect(f"{login_url}?{urlencode({'next': request.path})}")
     user_orders = Order.objects.filter(user=request.user).order_by("-created_at")
     return render(request, "movies/orders.html", {"orders": user_orders})
 
 def order_detail(request, order_id):
     if not request.user.is_authenticated:
-        return redirect("users:login")
+        login_url = reverse("users:login")
+        return HttpResponseRedirect(f"{login_url}?{urlencode({'next': request.path})}")
 
     order = get_object_or_404(Order, id=order_id, user=request.user)
     order_items = OrderItem.objects.filter(order=order)

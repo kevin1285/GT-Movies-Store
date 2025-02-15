@@ -30,7 +30,7 @@
                 </form>
 
                 <p class="mt-3 text-center">
-                    Don't have an account? <a href="{% url 'users:signup' %}">Sign Up here</a>
+                    Don't have an account? <a href="{% url 'users:signup' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign Up here</a>
                 </p>
 
                 <p>
