@@ -8,19 +8,21 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.forms import PasswordResetForm
+from .models import UserProfile
 
 SECURITY_QUESTIONS = {
     "q1": "What is your favorite color?",
     "q2": "What is your first pet’s name?",
     "q3": "What is your mother's maiden name?"
 }
-
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True, help_text="Required. Enter a valid email address.")
+    security_question = forms.ChoiceField(choices=SECURITY_QUESTIONS.items(),required=True)
+    security_answer = forms.CharField(max_length = 150,required=True)
 
     class Meta:
         model = User
-        fields = ["username", "email", "password1", "password2"]
+        fields = ["username", "email", "password1", "password2","security_question", "security_answer"]
 
     def clean_password1(self):
         password1 = self.cleaned_data.get("password1")
@@ -41,6 +43,21 @@ class CustomUserCreationForm(UserCreationForm):
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("This email is already registered. Please use a different one.")
         return email
+
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        # user.set_password(self.cleaned_data["password1"])  # Hash password
+        if commit:
+            user.save()
+            # Create and link UserProfile with security question & answer
+            UserProfile.objects.create(
+                user=user,
+                security_question=self.cleaned_data["security_question"],
+                security_answer=self.cleaned_data["security_answer"].lower(),  # Normalize for case-insensitivity
+            )
+
+        return user
 
 
 def login_view(request):
@@ -82,11 +99,13 @@ def signup_view(request):
 
     return render(request, "users/signup.html", {"form": form})
 
-
 class SecurityQuestionForm(forms.Form):
     username = forms.CharField(label="Username", max_length=150)
     question = forms.ChoiceField(label="Select Security Question", choices=[(k, v) for k, v in SECURITY_QUESTIONS.items()])
     answer = forms.CharField(label="Answer", max_length=150)
+
+
+
 
 def forgot_password_view(request):
     if request.method == "POST":
