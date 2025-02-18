@@ -1,50 +1,73 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5" style="width: 84%;">
+<style>
+  .order-details-container {
+    margin: 0 auto;
+    padding: 0 10px;
+  }
+  @media (max-width: 576px) {
+    .order-details-container {
+      max-width: 90%; 
+    }
+  }
+  @media (min-width: 577px) {
+    .order-details-container {
+      max-width: 500px; 
+    }
+  }
+</style>
+
+<div class="container mt-5">
+  <div class="order-details-container">
     <h2 class="mb-4 text-center text-dark">Order Details - #{{ order.id }}</h2>
 
     <div class="card shadow-sm p-4 mb-4">
-        <p><strong>Order Date:</strong> {{ order.created_at|date:"M d, Y - H:i A" }}</p>
-        <p><strong>Status:</strong> 
-            <span class="badge {% if order.status == 'Completed' %}bg-success{% elif order.status == 'Pending' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
-                {{ order.status }}
-            </span>
-        </p>
-        <p><strong>Total Paid:</strong> ${{ order.total }}</p>
+      <p><strong>Order Date:</strong> {{ order.created_at|date:"M d, Y - H:i A" }}</p>
+      <p>
+        <strong>Status:</strong>
+        <span class="badge {% if order.status == 'Completed' %}bg-success{% elif order.status == 'Pending' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+          {{ order.status }}
+        </span>
+      </p>
+      <p><strong>Total Paid:</strong> ${{ order.total }}</p>
     </div>
 
     {% if order_items %}
-        <div class="table-responsive">
-            <table class="table table-hover align-middle shadow-sm rounded">
-                <thead class="text-center table-dark">
-                    <tr>
-                        <th class="text-center" style="width: 15%;">Poster</th>
-                        <th class="text-center" style="width: 45%;">Movie</th>
-                        <th class="text-center" style="width: 15%;">Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in order_items %}
-                    <tr>
-                        <td class="text-center">
-                            <img src="https://image.tmdb.org/t/p/w92{{ item.movie.poster_path }}" alt="{{ item.movie.title }}" class="img-thumbnail rounded shadow-sm" style="width: 70px; height: auto;">
-                        </td>
-                        <td class="fw-bold text-center align-middle">{{ item.movie.title }}</td>
-                        <td class="fw-bold text-center align-middle">${{ item.price }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle shadow-sm rounded">
+          <thead class="table-dark text-center">
+            <tr>
+              <th class="text-center">Poster</th>
+              <th class="text-center">Movie</th>
+              <th class="text-center">Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in order_items %}
+              <tr>
+                <td class="text-center">
+                  <img src="https://image.tmdb.org/t/p/w92{{ item.movie.poster_path }}" 
+                       alt="{{ item.movie.title }}" 
+                       class="img-thumbnail rounded shadow-sm"
+                       style="max-width: 70px;">
+                </td>
+                <td class="fw-bold text-center align-middle">{{ item.movie.title }}</td>
+                <td class="fw-bold text-center align-middle">${{ item.price }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     {% else %}
-        <div class="alert alert-warning text-center mt-4 mb-5" role="alert">
-            No movies found for this order.
-        </div>
+      <div class="alert alert-warning text-center mt-4 mb-5" role="alert">
+        No movies found for this order.
+      </div>
     {% endif %}
 
     <div class="text-center mt-4">
-        <a href="{% url 'movies:orders' %}" class="btn btn-outline-secondary">Back to Orders</a>
+      <a href="{% url 'movies:orders' %}" class="btn btn-outline-secondary">Back to Orders</a>
     </div>
+  </div>
 </div>
 {% endblock %}
