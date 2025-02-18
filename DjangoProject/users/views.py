@@ -91,9 +91,9 @@ def signup_view(request):
             return redirect(next_url)
         else:
             messages.error(request, "Please correct the errors below.")
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field.capitalize()}: {error}")
+            # for field, errors in form.errors.items():
+            #     for error in errors:
+            #         messages.error(request, f"{field.capitalize()}: {error}")
 
     else:
         form = CustomUserCreationForm()
