@@ -100,12 +100,11 @@ def signup_view(request):
 
     return render(request, "users/signup.html", {"form": form})
 
-# class SecurityQuestionForm(forms.Form):
-#     username = forms.CharField(label="Username", max_length=150)
-#     question = forms.ChoiceField(label="Select Security Question", choices=[(k, v) for k, v in SECURITY_QUESTIONS.items()])
-#     answer = forms.CharField(label="Answer", max_length=150)
-#
-#
+class SecurityQuestionForm(forms.Form):
+    username = forms.CharField(label="Username", max_length=150)
+    answer = forms.CharField(label="Answer", max_length=150)
+
+
 
 
 def forgot_password_view(request):
