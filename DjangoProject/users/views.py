@@ -17,12 +17,11 @@ SECURITY_QUESTIONS = {
 }
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True, help_text="Required. Enter a valid email address.")
-    security_question = forms.ChoiceField(choices=SECURITY_QUESTIONS.items(),required=True)
     security_answer = forms.CharField(max_length = 150,required=True)
 
     class Meta:
         model = User
-        fields = ["username", "email", "password1", "password2","security_question", "security_answer"]
+        fields = ["username", "email", "password1", "password2", "security_answer"]
 
     def clean_password1(self):
         password1 = self.cleaned_data.get("password1")
@@ -53,7 +52,6 @@ class CustomUserCreationForm(UserCreationForm):
             # Create and link UserProfile with security question & answer
             UserProfile.objects.create(
                 user=user,
-                security_question=self.cleaned_data["security_question"],
                 security_answer=self.cleaned_data["security_answer"].lower(),  # Normalize for case-insensitivity
             )
 
@@ -93,18 +91,21 @@ def signup_view(request):
             return redirect(next_url)
         else:
             messages.error(request, "Please correct the errors below.")
+            # for field, errors in form.errors.items():
+            #     for error in errors:
+            #         messages.error(request, f"{field.capitalize()}: {error}")
 
     else:
         form = CustomUserCreationForm()
 
     return render(request, "users/signup.html", {"form": form})
 
-class SecurityQuestionForm(forms.Form):
-    username = forms.CharField(label="Username", max_length=150)
-    question = forms.ChoiceField(label="Select Security Question", choices=[(k, v) for k, v in SECURITY_QUESTIONS.items()])
-    answer = forms.CharField(label="Answer", max_length=150)
-
-
+# class SecurityQuestionForm(forms.Form):
+#     username = forms.CharField(label="Username", max_length=150)
+#     question = forms.ChoiceField(label="Select Security Question", choices=[(k, v) for k, v in SECURITY_QUESTIONS.items()])
+#     answer = forms.CharField(label="Answer", max_length=150)
+#
+#
 
 
 def forgot_password_view(request):
