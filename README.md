@@ -2,6 +2,8 @@
 Thomas Guo, Kevin Ma, Lucas Yang, Kaicheng Ying, Jack Stolz
 
 ## How to Run Project locally
+pip install django
+pip install requests
 python manage.py makemigrations  
 python manage.py migrate  
 python manage.py populate_movies_command  
