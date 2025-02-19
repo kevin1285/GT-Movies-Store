@@ -2,6 +2,7 @@
 Thomas Guo, Kevin Ma, Lucas Yang, Kaicheng Ying, Jack Stolz
 
 ## How to Run Project locally
+cd DjangoProject
 pip install django  
 pip install requests  
 python manage.py makemigrations  
