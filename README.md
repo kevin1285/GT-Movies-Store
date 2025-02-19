@@ -1,8 +1,7 @@
-# GT Movies Store
+# GT Movies Store - Ian Group 3
 Thomas Guo, Kevin Ma, Lucas Yang, Kaicheng Ying, Jack Stolz
-Ian Group 3
 
-## How to run
+## How to Run Project locally
 python manage.py makemigrations  
 python manage.py migrate  
 python manage.py populate_movies_command  
